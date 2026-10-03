@@ -1,0 +1,3 @@
+import { describe, expect, it } from "vitest"; import { enrich, filterLiquidations, positionNotional } from "./liquidations";
+const item = { liquidation_id: 1, account_id: "0xabc", liquidator_id: "0xdef", created_at_ms: 0, positions: [{ market_id: "btc", size: "2", price: "100", direction: "Long" }] };
+describe("liquidation analytics", () => { it("calculates notional", () => expect(positionNotional(item.positions[0], new Map())).toBe(200)); it("enriches markets and directions", () => expect(enrich(item).marketIds).toEqual(["btc"])); it("filters by minimum", () => expect(filterLiquidations([enrich(item)], "", 201)).toHaveLength(0)); });
