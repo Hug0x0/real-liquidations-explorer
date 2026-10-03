@@ -1,0 +1,6 @@
+import type { EnrichedLiquidation, Liquidation, LiquidationPosition } from "./types";
+const size = (position: LiquidationPosition) => Number(position.size ?? position.volume ?? position.quantity ?? 0);
+const market = (position: LiquidationPosition) => position.market_id ?? position.market ?? "unknown";
+export function positionNotional(position: LiquidationPosition, prices: Map<string, number>): number { return Number(position.notional ?? 0) || size(position) * Number(position.price ?? position.liquidation_price ?? prices.get(market(position)) ?? 0); }
+export function enrich(item: Liquidation, prices = new Map<string, number>()): EnrichedLiquidation { return { ...item, notional: item.positions.reduce((sum, position) => sum + positionNotional(position, prices), 0), marketIds: [...new Set(item.positions.map(market))], directions: [...new Set(item.positions.map((position) => position.direction ?? position.side ?? "unknown"))] }; }
+export function filterLiquidations(items: EnrichedLiquidation[], marketId: string, minimum: number, account = "") { return items.filter((item) => (!marketId || item.marketIds.includes(marketId)) && item.notional >= minimum && (!account || item.account_id.toLowerCase().includes(account.toLowerCase()))); }
