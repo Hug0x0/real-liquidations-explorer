@@ -18,6 +18,8 @@ Search recent events. Follow an account. Inspect the positions behind the number
 
 ---
 
+![Liquidations Explorer showing the live REAL liquidation tape](assets/explorer-preview.png)
+
 REAL Liquidations Explorer is a community-built, read-only interface for public liquidation data. It turns indexer events into a searchable tape with market names, account links, and event-level notional values. No wallet connection or signing is required.
 
 ## Features
