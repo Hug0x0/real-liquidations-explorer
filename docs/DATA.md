@@ -22,10 +22,10 @@ The client types are defined in [`src/types.ts`](../src/types.ts).
 | Record | Fields used |
 | --- | --- |
 | Market | `id`, `symbol`, `price` |
-| Liquidation | `liquidation_id`, `account_id`, `positions`, `created_at_ms` |
+| Liquidation | `liquidation_id`, `account_id`, `market_id`, `position_before`, `outcome_detail`, `created_at_ms` |
 | Position | Market, direction, size, price, and notional fields described below |
 
-`liquidator_id` is included in the liquidation type but is not displayed. Timestamps are interpreted as Unix milliseconds. Unknown market symbols fall back to the market identifier.
+The indexer currently returns one market per liquidation at the top level. The client normalizes it into the legacy `positions` shape using `market_id`, the direction from `position_before`, and the size and price from `outcome_detail` (falling back to `position_before.size` and `mark_price`). `liquidator_id` is included in the normalized type but is not displayed. Timestamps are interpreted as Unix milliseconds. Unknown market symbols fall back to the market identifier.
 
 ## Position notional
 
