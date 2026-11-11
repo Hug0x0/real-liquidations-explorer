@@ -13,7 +13,7 @@ REAL indexer → API client → market and event state
                                   ↓
                        summary and event cards
 
-Request failure → demo fixtures → same enrichment and UI
+Liquidation request failure (first load) → demo fixtures → same enrichment and UI
 ```
 
 ## Source map
@@ -33,11 +33,11 @@ Request failure → demo fixtures → same enrichment and UI
 
 ## State and lifecycle
 
-`App` loads both collections in a mount effect using `Promise.all`. React Strict Mode is enabled, so development mode can run the effect more than once. There is no request cancellation, retry loop, refresh timer, or stale-data indicator.
+`App` loads both collections in a mount effect using `Promise.allSettled`, then repeats every 30 seconds. Responses that arrive after unmount are ignored. React Strict Mode is enabled, so development mode can run the effect more than once. A failed refresh after live data loaded keeps the previous events and shows `REFRESH FAILED`.
 
 Market symbol and price maps, enriched events, and filtered results are derived with `useMemo`. The summary is calculated from the visible events. Filter changes do not make API requests.
 
-The initial state has no events and displays `DEMO FEED`; there is no separate loading UI. Successful requests set the live flag. Request failures load fixtures without showing a detailed error message.
+The initial state has no events and displays `DEMO FEED`; there is no separate loading UI. A successful liquidation request sets the live flag, even if market metadata fails. A first-load liquidation failure loads fixtures without showing a detailed error message.
 
 ## Build and external services
 
@@ -49,13 +49,13 @@ The production output is a static `dist/` directory. Environment configuration i
 
 | Symptom | What to inspect |
 | --- | --- |
-| The page remains in demo mode | Check browser network requests for API errors, CORS failures, or JSON parsing failures. Either collection failing activates fallback data. |
+| The page remains in demo mode | Check browser network requests for API errors, CORS failures, or JSON parsing failures. Only a liquidation-request failure on first load activates fallback data. |
 | A live feed is empty | Clear filters and inspect the returned liquidation array. Empty successful results do not trigger demo mode. |
 | An event shows an unexpected amount | Inspect its position fields and price fallbacks in [data semantics](DATA.md). Multi-market events retain their full total. |
-| Data does not change | Reload the page. Automatic refresh is not implemented. |
+| Data does not change | The feed refreshes every 30 seconds; check the timestamp and `REFRESH FAILED` label in the navigation bar. |
 | A custom API URL is ignored | Restart Vite after development configuration changes; rebuild and redeploy production assets after build-time configuration changes. |
 | Invalid data breaks rendering | Compare the response with `src/types.ts`; the client has no runtime schema validation. |
 
 ## Areas for future work
 
-Potential improvements include explicit loading and error states, runtime response validation, pagination, manual refresh, decimal-safe valuation, and broader test coverage. These are opportunities, not implemented features or release commitments.
+Potential improvements include explicit loading and error states, runtime response validation, pagination decimal-safe valuation, and broader test coverage. These are opportunities, not implemented features or release commitments.

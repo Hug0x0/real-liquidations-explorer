@@ -60,9 +60,9 @@ Set `VITE_REAL_API_URL` to the desired base URL, without a trailing slash, then 
 
 ## How it works
 
-Markets are discovered from the indexer, including BTC-USDT, ETH-USDT, SOL-USDT, HYPE-USDT, XRP-USDT, and XAUT-USDT. New markets require no hard-coded allowlist; reload the page to fetch the latest list. Demo fixtures also include these six markets, with synthetic prices and events.
+Markets are discovered from the indexer, including BTC-USDT, ETH-USDT, SOL-USDT, HYPE-USDT, XRP-USDT, and XAUT-USDT. New markets require no hard-coded allowlist; the list is refreshed with the feed every 30 seconds. Demo fixtures also include these six markets, with synthetic prices and events.
 
-1. On page load, the browser requests market metadata and liquidation events from the REAL indexer.
+1. On page load, then every 30 seconds, the browser requests market metadata and liquidation events from the REAL indexer.
 2. The app resolves market symbols, computes each event's total notional, and sorts the events by timestamp.
 3. Filters run locally against the loaded events. The summary updates with the visible results.
 4. Clicking an account opens `?account=<account-id>` and pre-fills the account filter.
@@ -71,8 +71,9 @@ Markets are discovered from the indexer, including BTC-USDT, ETH-USDT, SOL-USDT,
 
 ### Feed behavior and current limits
 
-- **LIVE FEED** means both API requests succeeded. It does not mean streaming: there is no polling, WebSocket connection, or automatic refresh. Reload the page to request data again.
-- **DEMO FEED** is shown initially and remains active if either request fails. In that case, both datasets are replaced with sample data.
+- **LIVE FEED** means the liquidation request succeeded. The feed is polled every 30 seconds (no WebSocket) and the navigation bar shows the time of the last successful refresh. If a later refresh fails, the last live events stay on screen and the label adds **REFRESH FAILED**.
+- If only the market request fails, live events are still shown; market symbols fall back to identifiers and notional uses event prices.
+- **DEMO FEED** is shown initially and remains active if the first liquidation request fails. In that case, both datasets are replaced with sample data.
 - The app requests one page of up to 200 markets and 250 liquidation events. API limits may differ; the app does not fetch additional pages or search full history.
 - A multi-position event stays one card. Filtering by one market retains the entire event and its full notional, including positions in other markets.
 - Market and minimum-notional filters are not saved in the URL. Editing the account field also does not update the URL; account links provide the shareable filter.

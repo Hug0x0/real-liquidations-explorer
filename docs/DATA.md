@@ -13,7 +13,7 @@ The default base URL is `https://indexer.api.real.xyz`, configurable with `VITE_
 
 Requests are unauthenticated browser GET requests. The client accepts a top-level array or the response's `data` property, defaulting to an empty array when `data` is absent. It does not follow pagination or validate response records at runtime.
 
-Both requests must succeed before the app selects API data. A rejected request, non-success HTTP status, or JSON parsing error switches both datasets to the fixtures in [`src/mock.ts`](../src/mock.ts). A successful empty response produces an empty live feed, not demo data. Malformed records can still cause rendering errors because TypeScript types do not validate network responses.
+Both requests are repeated every 30 seconds. The liquidation request decides the data source: if it succeeds, live events are shown even when market metadata fails (symbols then fall back to market identifiers). If the first liquidation request is rejected, returns a non-success HTTP status, or cannot be parsed, both datasets switch to the fixtures in [`src/mock.ts`](../src/mock.ts). Later failures keep the last live data. A successful empty response produces an empty live feed, not demo data. Malformed records can still cause rendering errors because TypeScript types do not validate network responses.
 
 ## Expected records
 
