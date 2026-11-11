@@ -46,7 +46,7 @@ npm ci
 npm run dev
 ```
 
-Open the local URL printed by Vite. Access to the repository is required while it remains private.
+Open the local URL printed by Vite.
 
 ### Configuration
 
