@@ -62,7 +62,7 @@ Set `VITE_REAL_API_URL` to the desired base URL, without a trailing slash, then 
 
 ## How it works
 
-Markets are discovered from the indexer, including BTC-USDT, ETH-USDT, SOL-USDT, HYPE-USDT, XRP-USDT, and XAUT-USDT. New markets require no hard-coded allowlist; the list is refreshed with the feed every 30 seconds. Demo fixtures also include these six markets, with synthetic prices and events.
+Markets are discovered from the indexer, including BTC-USDT, ETH-USDT, SOL-USDT, HYPE-USDT, XRP-USDT, XAUT-USDT, BNB-USDT, ZEC-USDT, LIT-USDT, NEAR-USDT, XMR-USDT and ENA-USDT. New markets require no hard-coded allowlist; the list is refreshed with the feed every 30 seconds. Demo fixtures also include these twelve markets, with synthetic prices and events.
 
 1. On page load, then every 30 seconds, the browser requests market metadata and liquidation events from the REAL indexer.
 2. The app resolves market symbols, computes each event's total notional, and sorts the events by timestamp.
